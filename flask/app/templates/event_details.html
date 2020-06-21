@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container pt-5 pb-5">
+        <div class="jumbotron" style="background-color: white;">
+        <h1 class="text-capitalize font-weight-lighter">{{ post.title }}</h1>
+        <hr>
+        <h4 class="font-weight-lighter">Event Details:</h4>
+        <p class="text-capitalize">{{ post.body }}</p>
+        {% if image_url %}
+            <img src="{{ image_url }}" class="img-fluid" alt="Responsive image">
+        {% endif %}
+        {% if user.user_level <= 2 %}
+            <div class="form-group text-center">
+                <form action="{{ url_for('auth.verify', id =post.id) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value='Verify', class="btn btn-primary", style="width:200px;"") }}
+                </form>
+            </div>
+
+        {% elif not post.has_joined(user)  %}
+            <div class="form-group text-center">
+                <form action="{{ url_for('auth.join', id =post.id) }}" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ form.submit(value='Join', class="btn btn-primary", style="width:200px;") }}
+                </form>
+            </div>
+        {% elif not post.has_joined(user) %}
+            <div class="form-group text-center">
+                <form action="{{ url_for('auth.leave', id=post.id) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Unfollow', class="btn btn-primary", style="width:200px;") }}
+                </form>
+            </div>
+        {% endif %}
+
+
+        {% if post.user_id == user.id or user.user_level < 3 %}
+            <h2>List of participants</h2>
+            <hr>
+        {% for user in list_of_participants  %}
+                <div>
+                    <p>{{ user.username }}</p>
+                </div>
+        {% endfor %}
+            <div class="form-group text-center">
+                <form action="{{ url_for('auth.delete_event', id=post.id) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value='Delete', class="btn btn-primary", style="width:200px;") }}
+                </form>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}

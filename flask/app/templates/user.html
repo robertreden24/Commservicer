@@ -1,0 +1,44 @@
+{%  extends "base.html" %}
+{% block content %}
+<div class="jumbotron pt-5" style="background-image: url('/static/images/bgheader.jpg'); background-size: cover;
+                        -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover;">
+    <div class="row">
+        <img src="{{ user.avatar(150) }}" class="mx-auto rounded-circle">
+    </div>
+    <br>
+    <div class="row">
+        <h1 style="font-family: candara; color: white" class="mx-auto">{{ user.username }}</h1>
+    </div>
+    {% if user.about_me %}
+        <div class="row">
+            <p class="mx-auto" style="font-family: candara; color: white">{{ user.about_me }}</p>
+        </div>
+    {% endif %}
+    {% if user.last_seen %}
+        <div class="row">
+            <p style="font-family: candara; color: white" class="mx-auto">Last seen on: {{ user.last_seen }}</p>
+        </div>
+    {% endif %}
+    {% if user == current_user %}
+        <div class="row">
+            <p style="font-family: candara; color: white" class="mx-auto">
+                <a href="{{ url_for('auth.edit_profile') }}">
+                    Edit Profile
+                </a>
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="container pb-5">
+    {% for post in posts %}
+        {% include "_post.html" %}
+    {%  endfor %}
+    {% if prev_url %}
+            <a href="{{ prev_url }}">Newer events</a>
+        {% endif %}
+    {% if next_url %}
+            <a href="{{ next_url }}">Older events</a>
+    {% endif %}
+</div>
+{% endblock %}
